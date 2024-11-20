@@ -3,6 +3,9 @@ dependencies:
   - name: metaphor
     repository: http://chartmuseum.chartmuseum.svc.cluster.local:8080
     version: 0.1.0
+  - name: grapple-resource
+    repository: "file://./grapple-resources/chart"  # Path to the grapple-resource chart
+    version: "0.1.0"  # Use the actual version of the chart
 description: metaphor example application
 name: metaphor-development
 type: application
