@@ -20,7 +20,7 @@ metadata:
     {{- include "myapp.labels" . | nindent 4 }}
   annotations:
     {{ $secret := (lookup "v1" "Secret" "grpl-system" "grsf-config" ) }}
-    cert-manager.io/cluster-issuer: {{ index $secret.data "sslissuer" | b64dec }}
+    cert-manager.io/cluster-issuer: {{ index $secret "data" "sslissuer" | b64dec }}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
