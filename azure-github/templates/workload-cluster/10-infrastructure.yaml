@@ -1,19 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloud-accounts
+  name: <WORKLOAD_CLUSTER_NAME>-infrastructure
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: '60'
+    argocd.argoproj.io/sync-wave: '10'
 spec:
   project: default
   source:
     repoURL: <GITOPS_REPO_URL>
-    path: registry/clusters/<CLUSTER_NAME>/components/cloud-accounts
+    path: registry/clusters/<WORKLOAD_CLUSTER_NAME>/infrastructure
     targetRevision: HEAD
   destination:
     name: in-cluster
-    namespace: crossplane-system
+    namespace: <WORKLOAD_CLUSTER_NAME>
   syncPolicy:
     automated:
       prune: true
