@@ -1,0 +1,109 @@
+apiVersion: grsf.grpl.io/v1alpha1
+kind: GrappleApplicationSet
+metadata:
+  name: gras-mysql
+  namespace: grpl-mdl-int
+spec:
+  grapis:
+  - name: gras-mysql
+    spec:
+      automigrate: true
+      datasources:
+      - name: classicmodelsid
+        spec:
+          mysql:
+            database: classicmodelsid
+            host: $(host)
+            name: classicmodelsid
+            password: $(password)
+            port: $(port)
+            url: ""
+            user: $(username)
+      extraSecrets:
+      - gras-mysql-conn-credential
+      ingress: true
+      initContainers:
+      - name: init-db
+        spec:
+          command:
+          - bash
+          - -c
+          - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; if mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "USE classicmodelsid; SET @tablename := (select table_name from information_schema.tables where table_type = 'BASE TABLE' and table_schema = 'classicmodelsid' limit 1); set @qry1:= concat('select * from ',@tablename,' limit 1'); prepare stmt from @qry1 ; execute stmt ;" ; then echo "database already exists..."; else curl -o /tmp/classicmodelsid.sql https://raw.githubusercontent.com/grapple-solutions/grapple-test-data/main/classicmodelsid/classicmodelsid.sql; mysql -h $(host) -P $(port) -u $(username) -p$(password) < /tmp/classicmodelsid.sql; fi;
+          image: mysql
+          name: init-db
+      models:
+      - name: customer
+        spec:
+          base: Entity
+          name: customer
+          properties:
+            customername:
+              type: string
+            datecreated:
+              required: false
+              type: date
+            datelastupdated:
+              required: false
+              type: date
+            emaildomain:
+              required: true
+              type: string
+            id:
+              generated: true
+              id: true
+              required: true
+              type: number
+      - name: email
+        spec:
+          base: Entity
+          name: email
+          properties:
+            email:
+              required: true
+              type: string
+            emaildomain:
+              required: true
+              type: string
+            id:
+              generated: true
+              id: true
+              required: true
+              type: number
+      - name: cluster
+        spec:
+          base: Entity
+          name: cluster
+          properties:
+            clusterdns:
+              type: string
+            clusteridentifier:
+              type: string
+            clustername:
+              type: string
+            customerId:
+              type: string
+            datecreated:
+              required: false
+              type: date
+            datelastupdated:
+              required: false
+              type: date
+            emailId:
+              required: true
+              type: string
+            id:
+              generated: true
+              id: true
+              required: true
+              type: number
+      restcruds:
+      - name: classicmodelsid
+        spec:
+          datasource: classicmodelsid
+  gruims:
+  - name: gras-mysql
+    spec:
+      additionalpackages: ""
+      config: ""
+      style: '{"colors":{"primary":{"DEFAULT":"#004a99","fg":"#ffffff"},"accent":{"DEFAULT":"#fa7252","fg":"#ffffff"}}}'
+  name: gras-mysql
