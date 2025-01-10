@@ -29,7 +29,7 @@ resource "azurerm_kubernetes_cluster" "kubefirst" {
   resource_group_name = azurerm_resource_group.kubefirst.name
   dns_prefix          = local.cluster_name
 
-  kubernetes_version      = local.kubernetes_version
+  kubernetes_version      = data.azurerm_kubernetes_service_versions.current.latest_version
   node_os_upgrade_channel = "NodeImage"
 
   default_node_pool {
@@ -118,7 +118,7 @@ resource "kubernetes_secret_v1" "external_dns" {
     "azure.json" = jsonencode({
       tenantId                    = data.azurerm_client_config.current.tenant_id
       subscriptionId              = data.azurerm_client_config.current.subscription_id
-      resourceGroup               = local.dns_zone_rg
+      resourceGroup               = data.azurerm_dns_zone.external_dns[count.index].resource_group_name
       useManagedIdentityExtension = true
       userAssignedIdentityID      = azurerm_kubernetes_cluster.kubefirst.kubelet_identity[0].client_id
     })

@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://charts.konstruct.io
-    targetRevision: 2.7.5-rc7
+    targetRevision: 2.7.10-rc33
     chart: kubefirst-pro
     helm:
       values: |-
@@ -30,6 +30,7 @@ spec:
             CLUSTER_NAME: "<CLUSTER_NAME>"
         kubefirst-pro-ui:
           domain: "<DOMAIN_NAME>"
+          isK3d: "true"
           extraEnv:
             DISABLE_AUTH: "true"
           extraEnvSecrets:
