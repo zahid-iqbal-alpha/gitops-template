@@ -2,7 +2,7 @@ apiVersion: apps.kubeblocks.io/v1alpha1
 kind: Cluster
 metadata:
   name: gras-mysql
-  namespace: grpl-mdl-int
+  namespace: development
 spec:
   clusterDefinitionRef: apecloud-mysql
   clusterVersionRef: ac-mysql-8.0.30

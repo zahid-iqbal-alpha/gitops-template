@@ -2,7 +2,7 @@ apiVersion: grsf.grpl.io/v1alpha1
 kind: GrappleApplicationSet
 metadata:
   name: gras-mysql
-  namespace: grpl-mdl-int
+  namespace: development
 spec:
   grapis:
   - name: gras-mysql
